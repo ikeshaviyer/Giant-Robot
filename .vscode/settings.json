@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Giant Robot.sln"
+    "dotnet.defaultSolution": "Giant-Robot.sln"
 }
