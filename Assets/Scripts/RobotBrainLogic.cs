@@ -8,9 +8,8 @@ public class RobotBrainLogic : MonoBehaviour
     public enum RobotPart { Head, Arm, Leg, Core }
     public enum Resource { Metal, Circuit, Battery, Wire }
 
-    // Number of rounds before the repair deadline
     public int roundsBeforeDeadline = 5;
-    public int difficultyLevel = 1; // Initial difficulty level
+    public int difficultyLevel = 1;
 
     // Store the robot parts and their repair status
     private Dictionary<RobotPart, List<Resource>> repairsNeeded = new Dictionary<RobotPart, List<Resource>>();
@@ -32,7 +31,6 @@ public class RobotBrainLogic : MonoBehaviour
         }
     }
 
-    // Generates the repair requirements based on the difficulty level
     void GenerateRepairs()
     {
         repairsNeeded.Clear();
@@ -51,20 +49,21 @@ public class RobotBrainLogic : MonoBehaviour
             // Generate a random resource for the repair
             Resource requiredResource = (Resource)Random.Range(0, System.Enum.GetValues(typeof(Resource)).Length);
             repairsNeeded.Add(selectedPart, new List<Resource> { requiredResource });
-            repairStatus.Add(selectedPart, false); // Set the initial repair status to false
+            repairStatus.Add(selectedPart, false);
 
-            // Display the repair message
-            visuals.DisplayMessage($"{selectedPart} needs repairing, bring {requiredResource}.");
+            // Display the repair message for each part
+            StartCoroutine(DisplayMessageWithDelay($"{selectedPart} needs repairing, bring {requiredResource}.", 2f * (i + 1)));
         }
-                    // After the repair message, display the rounds remaining
-            StartCoroutine(DisplayMessageWithDelay($"{roundsBeforeDeadline} rounds left before DEADLINE.", 3f));
+
+        // Display the initial round countdown message after all parts' repair messages
+        StartCoroutine(DisplayMessageWithDelay($"{roundsBeforeDeadline} rounds left before DEADLINE.", partsToRepair * 2f + 2f));
     }
 
     // Coroutine to handle displaying a message with a delay
     private IEnumerator DisplayMessageWithDelay(string message, float delay)
     {
-        yield return new WaitForSeconds(delay); // Wait for the specified delay
-        visuals.DisplayMessage(message);
+        yield return new WaitForSeconds(delay);
+        StartCoroutine(visuals.DisplayMessage(message, 3f));
     }
 
     // Call this to simulate the end of a round and update the round count only when space bar is pressed
@@ -76,11 +75,11 @@ public class RobotBrainLogic : MonoBehaviour
 
             if (roundsBeforeDeadline > 0)
             {
-                visuals.DisplayMessage($"{roundsBeforeDeadline} rounds left before DEADLINE.");
+                StartCoroutine(visuals.DisplayMessage($"{roundsBeforeDeadline} rounds left before DEADLINE.", 2f));
             }
             else
             {
-                CheckRepairStatus(); // Check if repairs are completed when rounds reach 0
+                CheckRepairStatus();
             }
         }
     }
@@ -101,14 +100,14 @@ public class RobotBrainLogic : MonoBehaviour
 
         if (allRepaired)
         {
-            visuals.DisplayMessage("Good Job! Repairs successful.");
-            difficultyLevel++; // Increase difficulty for next round
-            roundsBeforeDeadline = 5; // Reset rounds for the new deadline
-            GenerateRepairs(); // Generate new repair requirements
+            StartCoroutine(visuals.DisplayMessage("Good Job! Repairs successful.", 3f));
+            difficultyLevel++;
+            roundsBeforeDeadline = 5;
+            GenerateRepairs();
         }
         else
         {
-            visuals.DisplayMessage("Game OVER! Repairs failed.");
+            StartCoroutine(visuals.DisplayMessage("Game OVER! Repairs failed.", 3f));
         }
     }
 }
