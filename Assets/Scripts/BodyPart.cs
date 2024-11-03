@@ -10,7 +10,7 @@ public class BodyPart : MonoBehaviour
 
     void Start()
     {
-        SetRandomResourceRequirement(); // Initialize at start
+
     }
 
     public void SetRandomResourceRequirement()

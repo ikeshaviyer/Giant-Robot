@@ -75,7 +75,14 @@ public class RobotBrainLogic : MonoBehaviour
         }
         else
         {
-            StartCoroutine(InitiateRepairProcess());
+            // if(//the body parts that are made to be repaired are repaired run the NextDeadline method)
+            // {
+            NextDeadline();
+            // }
+            // else //GameOver
+            // {
+            //     GameOver();
+            // }
         }
     }
 

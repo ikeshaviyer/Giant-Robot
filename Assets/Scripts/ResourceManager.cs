@@ -4,12 +4,11 @@ using System.Collections.Generic;
 public class ResourceManager : MonoBehaviour
 {
     // Base resource amounts
-    private Dictionary<string, int> baseResourceAmounts = new Dictionary<string, int>
+    private Dictionary<string, int> maxResourceAmounts = new Dictionary<string, int>
     {
-        { "Metal", 5 },
-        { "Circuit", 3 },
-        { "Battery", 2 },
-        { "Wire", 4 }
+        { "Scrap Metal", 5 },
+        { "Energy Cores", 5 },
+        { "Circuits", 5 }
     };
 
     // This dictionary keeps track of resources that have been scanned
@@ -22,7 +21,7 @@ public class ResourceManager : MonoBehaviour
     {
         difficultyLevel = RobotBrainLogic.difficultyLevel;
         // Initialize scanned resources
-        foreach (var resource in baseResourceAmounts.Keys)
+        foreach (var resource in maxResourceAmounts.Keys)
         {
             scannedResources[resource] = 0; // Start with zero scanned resources
         }
@@ -34,22 +33,27 @@ public class ResourceManager : MonoBehaviour
     // Get a random resource type
     public string GetRandomResourceType()
     {
-        List<string> resourceKeys = new List<string>(baseResourceAmounts.Keys);
+        List<string> resourceKeys = new List<string>(maxResourceAmounts.Keys);
         return resourceKeys[Random.Range(0, resourceKeys.Count)];
     }
 
     // Get a random amount of a resource required for repair
     public int GetRandomResourceAmount(string resourceType)
     {
-        int baseAmount = baseResourceAmounts[resourceType];
+        int maxAmount = maxResourceAmounts[resourceType];
         // Access difficultyLevel through the instance of RobotBrainLogic
-        return Random.Range(1, baseAmount + difficultyLevel + 1); // Random from 1 to (base + difficulty)
+        int resourceAmt = Random.Range(1, difficultyLevel);
+        if (resourceAmt > maxAmount)
+        {
+            resourceAmt = maxAmount;
+        }
+        return resourceAmt; // Random from 1 to difficulty level
     }
 
     // Scan a resource and add to the scanned resources
     public void ScanResource(string resourceType)
     {
-        if (baseResourceAmounts.ContainsKey(resourceType))
+        if (maxResourceAmounts.ContainsKey(resourceType))
         {
             scannedResources[resourceType]++;
             Debug.Log($"{resourceType} scanned. Total scanned: {scannedResources[resourceType]}");
