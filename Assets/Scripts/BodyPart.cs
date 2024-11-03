@@ -10,7 +10,7 @@ public class BodyPart : MonoBehaviour
 
     void Start()
     {
-
+        isRepaired = true;
     }
 
     public void SetRandomResourceRequirement()
@@ -22,7 +22,7 @@ public class BodyPart : MonoBehaviour
 
     public void AttemptRepair()
     {
-        if (canRepair)
+        if (canRepair && !isRepaired)
         {
             Debug.Log($"Attempting to repair {gameObject.name} using {requiredResourceType}. Required amount: {requiredResourceAmount}");
             // Call to scan resources dynamically would occur here

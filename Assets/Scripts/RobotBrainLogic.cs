@@ -5,64 +5,65 @@ using UnityEngine;
 public class RobotBrainLogic : MonoBehaviour
 {
     public int roundsBeforeDeadline = 5;
-    public static int difficultyLevel = 1; // Made static to be accessed in other classes
+    public static int difficultyLevel = 1;
 
-    private ResourceManager resourceManager;
-
-    // Static list defining the number of body parts needed to be repaired at each difficulty level
-    private static List<int> partsNeededPerDifficulty = new List<int>
-    {
-        1, // Difficulty 1 needs 1 part
-        2, // Difficulty 2 needs 2 parts
-        3, // Difficulty 3 needs 3 parts
-        4,
-    };
+    [SerializeField]
+    private List<BodyPart> bodyPartsToRepair = new List<BodyPart>();
+    private List<BodyPart> selectedParts = new List<BodyPart>();
 
     void Start()
     {
-        resourceManager = FindObjectOfType<ResourceManager>();
         StartNewGame();
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space)) // Simulate round ending
-        {
-            EndRound();
-        }
-
-        // Check for NFC input or any dynamic resource scanning method
-        if (Input.GetKeyDown(KeyCode.Alpha1)) // Simulating a scan for Metal
-        {
-            ScanResource("Metal");
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2)) // Simulating a scan for Circuit
-        {
-            ScanResource("Circuit");
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3)) // Simulating a scan for Battery
-        {
-            ScanResource("Battery");
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha4)) // Simulating a scan for Wire
-        {
-            ScanResource("Wire");
-        }
     }
 
     void StartNewGame()
     {
-        // Randomize resource requirements for body parts at the start of each deadline
         RandomizeBodyPartRequirements();
+    }
+
+        void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            EndRound();
+        }
     }
 
     public void RandomizeBodyPartRequirements()
     {
-        BodyPart[] bodyParts = FindObjectsOfType<BodyPart>();
-        foreach (var part in bodyParts)
+        // Set all body parts to repaired by default
+        foreach (var part in bodyPartsToRepair)
         {
-            part.SetRandomResourceRequirement(); // Set a random resource requirement for each body part
+            part.isRepaired = true;
+            part.canRepair = false; // Reset repair state
         }
+
+        // Determine the number of parts to repair based on difficulty, capping at the list count
+        int partsToRepairCount = Mathf.Min(difficultyLevel, bodyPartsToRepair.Count);
+
+        // Randomly select the required number of parts for repair
+        selectedParts = SelectRandomSubset(bodyPartsToRepair, partsToRepairCount);
+
+        // Set requirements only for the selected parts
+        foreach (var part in selectedParts)
+        {
+            part.isRepaired = false;
+            part.SetRandomResourceRequirement();
+        }
+    }
+
+    // Utility function to select a random subset of body parts
+    private List<BodyPart> SelectRandomSubset(List<BodyPart> list, int count)
+    {
+        List<BodyPart> shuffledList = new List<BodyPart>(list);
+        for (int i = 0; i < shuffledList.Count; i++)
+        {
+            int randomIndex = Random.Range(i, shuffledList.Count);
+            var temp = shuffledList[i];
+            shuffledList[i] = shuffledList[randomIndex];
+            shuffledList[randomIndex] = temp;
+        }
+        return shuffledList.GetRange(0, count);
     }
 
     void EndRound()
@@ -75,74 +76,48 @@ public class RobotBrainLogic : MonoBehaviour
         }
         else
         {
-            // if(//the body parts that are made to be repaired are repaired run the NextDeadline method)
-            // {
+            CheckGameOver();
+        }
+    }
+
+    void CheckGameOver()
+    {
+        // Check if all selected parts are repaired
+        bool allRepaired = true;
+        foreach (var part in selectedParts)
+        {
+            if (!part.isRepaired)
+            {
+                allRepaired = false;
+                break;
+            }
+        }
+
+        if (allRepaired)
+        {
             NextDeadline();
-            // }
-            // else //GameOver
-            // {
-            //     GameOver();
-            // }
+        }
+        else
+        {
+            GameOver();
         }
     }
 
     void GameOver()
     {
-        Debug.Log($"GAME OVER YOU LOST");
+        Debug.Log("GAME OVER - You didn't repair all required parts in time.");
     }
 
     void NextDeadline()
     {
         difficultyLevel++;
-        Debug.Log($"Next Deadline started");
-        StartCoroutine(InitiateRepairProcess());
+        roundsBeforeDeadline = 5; // Reset rounds for the next deadline
+        Debug.Log("Next Deadline started");
+        RandomizeBodyPartRequirements();
     }
 
-    IEnumerator InitiateRepairProcess()
+    void Success()
     {
-        // Here you can implement the logic to check if players are covering the sensors
-        BodyPart[] bodyParts = FindObjectsOfType<BodyPart>();
-
-        // Determine how many parts to repair based on the difficulty level
-        int partsToRepair = partsNeededPerDifficulty[difficultyLevel - 1];
-        List<BodyPart> partsToRepairList = new List<BodyPart>();
-
-        // Randomly select body parts to repair
-        for (int i = 0; i < partsToRepair; i++)
-        {
-            if (bodyParts.Length > 0)
-            {
-                int randomIndex = Random.Range(0, bodyParts.Length);
-                if (!bodyParts[randomIndex].isRepaired && bodyParts[randomIndex].canRepair)
-                {
-                    partsToRepairList.Add(bodyParts[randomIndex]);
-                }
-            }
-        }
-
-        // Attempt to repair the selected parts
-        foreach (var part in partsToRepairList)
-        {
-            part.AttemptRepair(); // Attempt to repair if conditions are met
-            yield return new WaitForSeconds(1f); // Simulate time taken for repair process
-        }
-
-        // Reset rounds after repairs
-        roundsBeforeDeadline = 5;
-        RandomizeBodyPartRequirements(); // Reset random requirements for the next deadline
-    }
-
-    private void ScanResource(string resourceType)
-    {
-        BodyPart[] bodyParts = FindObjectsOfType<BodyPart>();
-
-        foreach (var part in bodyParts)
-        {
-            if (!part.isRepaired && part.canRepair)
-            {
-                part.ScanResource(resourceType); // Scan the resource dynamically
-                break; // Only scan for the first body part that needs repair
-            }
-        }
+        //what happens after a successful deadline
     }
 }
