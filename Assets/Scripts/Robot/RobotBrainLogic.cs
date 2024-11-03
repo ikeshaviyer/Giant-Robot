@@ -10,10 +10,39 @@ public class RobotBrainLogic : MonoBehaviour
     [SerializeField]
     private List<BodyPart> bodyPartsToRepair = new List<BodyPart>();
     private List<BodyPart> selectedParts = new List<BodyPart>();
+    private List<string> idleDialogues = new List<string>
+    {
+        "I hope you can fix me soon...",
+        "I'm starting to feel a little rusty.",
+        "You're my only hope for survival!",
+        "Please hurry, my systems are failing...",
+        "I’m counting on you to repair me!"
+    };
+
+    private float idleSpeakInterval = 10f;
+    private float timeSinceLastSpeak;
 
     void Start()
     {
         StartNewGame();
+        timeSinceLastSpeak = idleSpeakInterval; // initialize to trigger an initial speak
+    }
+
+    void Update()
+    {
+        // End round with Space key
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            EndRound();
+        }
+
+        // Trigger random idle speak at intervals
+        // timeSinceLastSpeak += Time.deltaTime;
+        // if (timeSinceLastSpeak >= idleSpeakInterval)
+        // {
+        //     RandomIdleSpeak();
+        //     timeSinceLastSpeak = 0;
+        // }
     }
 
     void StartNewGame()
@@ -21,30 +50,17 @@ public class RobotBrainLogic : MonoBehaviour
         RandomizeBodyPartRequirements();
     }
 
-        void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            EndRound();
-        }
-    }
-
     public void RandomizeBodyPartRequirements()
     {
-        // Set all body parts to repaired by default
         foreach (var part in bodyPartsToRepair)
         {
             part.isRepaired = true;
             part.canRepair = false; // Reset repair state
         }
 
-        // Determine the number of parts to repair based on difficulty, capping at the list count
         int partsToRepairCount = Mathf.Min(difficultyLevel, bodyPartsToRepair.Count);
-
-        // Randomly select the required number of parts for repair
         selectedParts = SelectRandomSubset(bodyPartsToRepair, partsToRepairCount);
 
-        // Set requirements only for the selected parts
         foreach (var part in selectedParts)
         {
             part.isRepaired = false;
@@ -52,7 +68,6 @@ public class RobotBrainLogic : MonoBehaviour
         }
     }
 
-    // Utility function to select a random subset of body parts
     private List<BodyPart> SelectRandomSubset(List<BodyPart> list, int count)
     {
         List<BodyPart> shuffledList = new List<BodyPart>(list);
@@ -82,7 +97,6 @@ public class RobotBrainLogic : MonoBehaviour
 
     void CheckGameOver()
     {
-        // Check if all selected parts are repaired
         bool allRepaired = true;
         foreach (var part in selectedParts)
         {
@@ -106,6 +120,7 @@ public class RobotBrainLogic : MonoBehaviour
     void GameOver()
     {
         Debug.Log("GAME OVER - You didn't repair all required parts in time.");
+        DialogueManager.Instance.QueueDialogue("NOOOOOOOOOOO YOU'RE TOO LATE");
     }
 
     void NextDeadline()
@@ -118,6 +133,17 @@ public class RobotBrainLogic : MonoBehaviour
 
     void Success()
     {
-        //what happens after a successful deadline
+        // Actions to take on successful deadline
+    }
+
+    void RandomIdleSpeak()
+    {
+        if (DialogueManager.Instance != null)
+        {
+            int randomIndex = Random.Range(0, idleDialogues.Count);
+            string randomDialogue = idleDialogues[randomIndex];
+            DialogueManager.Instance.QueueDialogue(randomDialogue);
+            Debug.Log($"Idle Speak: {randomDialogue}");
+        }
     }
 }

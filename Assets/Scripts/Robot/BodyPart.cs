@@ -18,6 +18,7 @@ public class BodyPart : MonoBehaviour
         requiredResourceType = resourceManager.GetRandomResourceType();
         requiredResourceAmount = resourceManager.GetRandomResourceAmount(requiredResourceType);
         Debug.Log($"Required resource for {gameObject.name}: {requiredResourceType}, Amount: {requiredResourceAmount}");
+        DialogueManager.Instance.QueueDialogue($"Required resource for {gameObject.name}: {requiredResourceType}, Amount: {requiredResourceAmount}");
     }
 
     public void AttemptRepair()
