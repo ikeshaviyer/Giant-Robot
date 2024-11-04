@@ -15,11 +15,9 @@ public class ResourceManager : MonoBehaviour
     private Dictionary<string, int> scannedResources = new Dictionary<string, int>();
 
     private RobotBrainLogic robotBrainLogic;
-    private int difficultyLevel;
 
     void Start()
     {
-        difficultyLevel = RobotBrainLogic.difficultyLevel;
         // Initialize scanned resources
         foreach (var resource in maxResourceAmounts.Keys)
         {
@@ -42,7 +40,7 @@ public class ResourceManager : MonoBehaviour
     {
         int maxAmount = maxResourceAmounts[resourceType];
         // Access difficultyLevel through the instance of RobotBrainLogic
-        int resourceAmt = Random.Range(1, difficultyLevel);
+        int resourceAmt = Random.Range(1, RobotBrainLogic.difficultyLevel);
         if (resourceAmt > maxAmount)
         {
             resourceAmt = maxAmount;

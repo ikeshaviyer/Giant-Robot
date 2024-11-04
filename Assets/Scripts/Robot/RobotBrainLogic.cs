@@ -10,6 +10,7 @@ public class RobotBrainLogic : MonoBehaviour
     [SerializeField]
     private List<BodyPart> bodyPartsToRepair = new List<BodyPart>();
     private List<BodyPart> selectedParts = new List<BodyPart>();
+    
     private List<string> idleDialogues = new List<string>
     {
         "I hope you can fix me soon...",
@@ -22,6 +23,8 @@ public class RobotBrainLogic : MonoBehaviour
     private float idleSpeakInterval = 10f;
     private float timeSinceLastSpeak;
 
+    private bool isDisasterActive = false; // Track if a disaster is active
+
     void Start()
     {
         StartNewGame();
@@ -33,10 +36,21 @@ public class RobotBrainLogic : MonoBehaviour
         // End round with Space key
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            EndRound();
+            if (isDisasterActive)
+            {
+                // Confirm disaster action
+                isDisasterActive = false; // Reset disaster state
+                EndRound(); // Continue with ending the round
+            }
+            else
+            {
+                // If no disaster, end the round directly
+                EndRound();
+            }
         }
 
         // Trigger random idle speak at intervals
+        // Uncomment if you want idle speak to occur
         // timeSinceLastSpeak += Time.deltaTime;
         // if (timeSinceLastSpeak >= idleSpeakInterval)
         // {
@@ -83,7 +97,8 @@ public class RobotBrainLogic : MonoBehaviour
 
     void EndRound()
     {
-        roundsBeforeDeadline--;
+        // Check if a disaster should occur before reducing rounds
+        DisasterLogic.Instance.CheckForDisaster(difficultyLevel, ref roundsBeforeDeadline);
 
         if (roundsBeforeDeadline > 0)
         {
@@ -93,6 +108,8 @@ public class RobotBrainLogic : MonoBehaviour
         {
             CheckGameOver();
         }
+
+        roundsBeforeDeadline--; // Decrement rounds after confirming disaster
     }
 
     void CheckGameOver()
@@ -128,12 +145,9 @@ public class RobotBrainLogic : MonoBehaviour
         difficultyLevel++;
         roundsBeforeDeadline = 5; // Reset rounds for the next deadline
         Debug.Log("Next Deadline started");
-        RandomizeBodyPartRequirements();
-    }
 
-    void Success()
-    {
-        // Actions to take on successful deadline
+        DisasterLogic.Instance.ResetDisasterForNewDeadline(); // Reset disaster for new deadline
+        RandomizeBodyPartRequirements();
     }
 
     void RandomIdleSpeak()
