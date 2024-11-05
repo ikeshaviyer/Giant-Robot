@@ -6,6 +6,7 @@ public class NFCReaderUnity : MonoBehaviour
 {
     private IntPtr _context;
     private IntPtr _cardHandle;
+    private bool _cardPresent = false;
 
     [DllImport("winscard.dll")]
     private static extern int SCardEstablishContext(uint dwScope, IntPtr pvReserved1, IntPtr pvReserved2, out IntPtr phContext);
@@ -14,7 +15,7 @@ public class NFCReaderUnity : MonoBehaviour
     private static extern int SCardReleaseContext(IntPtr hContext);
 
     [DllImport("winscard.dll")]
-    private static extern int SCardConnect(IntPtr hContext, string szReader, uint dwShareMode, uint dwPreferredProtocols, out IntPtr phCard, out IntPtr pdwActiveProtocol);
+    private static extern int SCardConnect(IntPtr hContext, string szReader, uint dwShareMode, uint dwPreferredProtocols, out IntPtr phCard, out uint pdwActiveProtocol);
 
     [DllImport("winscard.dll")]
     private static extern int SCardDisconnect(IntPtr hCard, int dwDisposition);
@@ -28,7 +29,6 @@ public class NFCReaderUnity : MonoBehaviour
     private const uint SCARD_PROTOCOL_T1 = 2;
     private const int SCARD_LEAVE_CARD = 0;
 
-    // Structure for protocol information
     [StructLayout(LayoutKind.Sequential)]
     public struct SCARD_IO_REQUEST
     {
@@ -38,54 +38,104 @@ public class NFCReaderUnity : MonoBehaviour
 
     private SCARD_IO_REQUEST _ioRequest = new SCARD_IO_REQUEST { dwProtocol = SCARD_PROTOCOL_T1, cbPciLength = (uint)Marshal.SizeOf(typeof(SCARD_IO_REQUEST)) };
 
+    void Start()
+    {
+        if (InitializeReader())
+        {
+            StartCoroutine(CheckForCard());
+        }
+    }
+
     public bool InitializeReader()
     {
         int result = SCardEstablishContext(SCARD_SCOPE_USER, IntPtr.Zero, IntPtr.Zero, out _context);
         if (result != 0)
         {
-            Debug.LogError("Failed to establish NFC context.");
+            Debug.LogError("Failed to establish NFC context. Error Code: " + result);
             return false;
         }
         Debug.Log("NFC context established.");
         return true;
     }
 
+    private System.Collections.IEnumerator CheckForCard()
+    {
+        while (true)
+        {
+            if (_cardPresent)
+            {
+                ReadAllData();
+                yield return new WaitForSeconds(1f);
+            }
+            else
+            {
+                if (ConnectToCard())
+                {
+                    _cardPresent = true;
+                    Debug.Log("Card detected.");
+                }
+                else
+                {
+                    yield return new WaitForSeconds(0.5f);
+                }
+            }
+        }
+    }
+
     public bool ConnectToCard()
     {
-        int result = SCardConnect(_context, "ACS ACR122U PICC Interface", SCARD_SHARE_SHARED, SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1, out _cardHandle, out _);
+        int result = SCardConnect(_context, "ACS ACR122 0", SCARD_SHARE_SHARED, SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1, out _cardHandle, out _);
+        
         if (result != 0)
         {
-            Debug.LogError("Failed to connect to NFC card.");
             return false;
         }
-        Debug.Log("Connected to NFC card.");
+        
         return true;
     }
 
     public void Disconnect()
     {
-        SCardDisconnect(_cardHandle, SCARD_LEAVE_CARD);
-        SCardReleaseContext(_context);
-        Debug.Log("Disconnected and released NFC context.");
-    }
-
-    public string ReadData()
-    {
-        // Example command to read the UID of the NFC card, varies based on card type
-        byte[] command = { 0xFF, 0xCA, 0x00, 0x00, 0x00 }; // APDU command for UID
-        byte[] response = new byte[256];
-        int responseLength = response.Length;
-
-        int result = SCardTransmit(_cardHandle, ref _ioRequest, command, command.Length, IntPtr.Zero, response, ref responseLength);
-        if (result != 0)
+        if (_cardHandle != IntPtr.Zero)
         {
-            Debug.LogError("Failed to read data from NFC card.");
-            return null;
+            SCardDisconnect(_cardHandle, SCARD_LEAVE_CARD);
+            _cardHandle = IntPtr.Zero;
+            Debug.Log("Card disconnected.");
         }
 
-        // Convert the received bytes to a hexadecimal string
-        string data = BitConverter.ToString(response, 0, responseLength).Replace("-", "");
-        Debug.Log("NFC Card Data: " + data);
-        return data;
+        if (_context != IntPtr.Zero)
+        {
+            SCardReleaseContext(_context);
+            _context = IntPtr.Zero;
+            Debug.Log("NFC context released.");
+        }
+    }
+
+    public void ReadAllData()
+    {
+        for (int blockNumber = 0; blockNumber < 64; blockNumber++)
+        {
+            byte[] command = { 0xFF, 0xB0, 0x00, (byte)blockNumber, 0x10 };
+            byte[] response = new byte[16];
+            int responseLength = response.Length;
+
+            int result = SCardTransmit(_cardHandle, ref _ioRequest, command, command.Length, IntPtr.Zero, response, ref responseLength);
+
+            if (result == 0)
+            {
+                string hexData = BitConverter.ToString(response, 0, response.Length).Replace("-", " ");
+                Debug.Log($"Block {blockNumber} Data (Hex): {hexData}");
+            }
+            else
+            {
+                Debug.LogError($"Failed to read from block {blockNumber}. Error Code: {result}");
+                return;
+            }
+        }
+    }
+
+    void OnDestroy()
+    {
+        Disconnect();
     }
 }
