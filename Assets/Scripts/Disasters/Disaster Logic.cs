@@ -38,6 +38,7 @@ public class DisasterLogic : MonoBehaviour
         {
             new RoundReductionDisaster { name = "Round Reduction", probability = 0.3f, message = "Rounds have been reduced!" },
             new ResourceDrainDisaster { name = "Resource Drain", probability = 0.1f, message = "Resources have been drained!" },
+            new ActionDrainDisaster { name = "Action Drain", probability = 0.1f, message = "Action points have been reduced!" },
             // Add more disasters here as needed
         };
     }
@@ -46,7 +47,6 @@ public class DisasterLogic : MonoBehaviour
     public void CheckForDisaster(int difficultyLevel, ref int roundsBeforeDeadline)
     {
         if (disasterOccurredThisDeadline) return; // Only one disaster per deadline
-
         foreach (var disaster in disasters)
         {
             if (Random.value < Mathf.Min(disaster.probability * difficultyLevel, 1f))

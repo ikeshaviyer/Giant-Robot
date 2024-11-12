@@ -38,3 +38,15 @@ public class ResourceDrainDisaster : Disaster
         DialogueManager.Instance.QueueDialogue(message);
     }
 }
+
+[System.Serializable]
+public class ActionDrainDisaster : Disaster
+{
+    public override void ApplyEffect(ref int roundsBeforeDeadline)
+    {
+        // Example effect that could drain resources
+        Debug.Log($"{name} has occurred! Actions are reduced by 1.");
+        // Implement resource reduction logic here
+        DialogueManager.Instance.QueueDialogue(message);
+    }
+}

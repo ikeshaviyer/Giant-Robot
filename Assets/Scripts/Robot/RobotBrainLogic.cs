@@ -24,6 +24,7 @@ public class RobotBrainLogic : MonoBehaviour
     private float timeSinceLastSpeak;
 
     private bool isDisasterActive = false; // Track if a disaster is active
+    public bool canEndRound = false;
 
     void Start()
     {
@@ -36,11 +37,10 @@ public class RobotBrainLogic : MonoBehaviour
         // End round with Space key
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (isDisasterActive)
+            if (!canEndRound)
             {
                 // Confirm disaster action
-                isDisasterActive = false; // Reset disaster state
-                EndRound(); // Continue with ending the round
+                canEndRound = true;
             }
             else
             {

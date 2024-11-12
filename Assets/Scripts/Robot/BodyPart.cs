@@ -45,11 +45,6 @@ public class BodyPart : MonoBehaviour
         }
     }
 
-    public void ScanResource(string resourceType)
-    {
-        AttemptRepair(); // Try to repair after scanning
-    }
-
     public void Repair()
     {
         isRepaired = true;

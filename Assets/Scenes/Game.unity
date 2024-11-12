@@ -805,6 +805,7 @@ MonoBehaviour:
   - {fileID: 270714751}
   - {fileID: 1736579924}
   - {fileID: 499913928}
+  canEndRound: 0
 --- !u!212 &1256374742
 SpriteRenderer:
   m_ObjectHideFlags: 0
