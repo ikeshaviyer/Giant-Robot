@@ -15,7 +15,18 @@ public class MifareCardReader : MonoBehaviour
     private MifareCard mifareCard;
     private string currentUID = null;
     private CancellationTokenSource cancellationTokenSource;
-    private HashSet<string> scannedUIDs = new HashSet<string>();  // Store scanned UIDs
+
+    // Dictionary to store UID with associated description
+    private Dictionary<string, string> uidDataDictionary = new Dictionary<string, string>();
+
+    // Dictionary to manage UID descriptions
+    private Dictionary<string, string> uidDescriptions = new Dictionary<string, string>
+    {
+        { "04-03-DA-43-21-02-89", "Circuit" },
+        { "04-F3-0C-41-21-02-89", "Scrap Metal" },
+        { "04-63-E0-62-21-02-89", "Energy Core" }
+        // Add or remove UIDs as needed
+    };
 
     // Singleton instance
     public static MifareCardReader Instance { get; private set; }
@@ -27,9 +38,13 @@ public class MifareCardReader : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        
+
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    void Start()
+    {
     }
 
     private void OnDestroy()
@@ -59,7 +74,7 @@ public class MifareCardReader : MonoBehaviour
         Instance.StopReaderLoop();
     }
 
-    public static void ResetCards()
+    public void ResetCards()
     {
         if (Instance == null)
         {
@@ -67,7 +82,7 @@ public class MifareCardReader : MonoBehaviour
             return;
         }
 
-        Instance.ResetScannedUIDs();
+        Instance.ResetUIDData();
     }
 
     private void StartReaderLoop()
@@ -105,25 +120,79 @@ public class MifareCardReader : MonoBehaviour
                 {
                     using (var isoReader = new IsoReader(context, readerName, SCardShareMode.Shared, SCardProtocol.Any, false))
                     {
-                        mifareCard = new MifareCard(isoReader);
+                        bool isMifare = false;
+                        bool isNTAG215 = false;
 
-                        // Attempt to read only the UID of the card.
-                        var uid = mifareCard.GetData();
-                        if (uid != null)
+                        // Attempt to detect MIFARE or NTAG215 by sending a known command for each type
+                        try
                         {
-                            string uidString = BitConverter.ToString(uid);
-
-                            // Check if UID has already been scanned
-                            if (!scannedUIDs.Contains(uidString))
+                            // Step 1: Try to identify MIFARE
+                            mifareCard = new MifareCard(isoReader);
+                            var mifareUID = mifareCard.GetData();
+                            if (mifareUID != null)
                             {
-                                currentUID = uidString;
-                                scannedUIDs.Add(uidString);  // Add UID to the set of scanned UIDs
-                                DisplayUIDLabel(currentUID);
+                                isMifare = true;
+                            }
+                        }
+                        catch
+                        {
+                            // Not a MIFARE card
+                        }
+
+                        if (!isMifare)
+                        {
+                            try
+                            {
+                                // Step 2: Attempt NTAG215 specific command
+                                var command = new CommandApdu(IsoCase.Case2Short, isoReader.ActiveProtocol)
+                                {
+                                    CLA = 0x00,
+                                    INS = 0x30, // READ command for NTAG215
+                                    P1 = 0x00,  // Page number for UID
+                                    Le = 16
+                                };
+                                var response = isoReader.Transmit(command);
+                                if (response.HasData)
+                                {
+                                    isNTAG215 = true;
+                                }
+                            }
+                            catch
+                            {
+                                // Not an NTAG215 card
+                            }
+                        }
+
+                        if (isMifare)
+                        {
+                            // MIFARE-specific UID handling
+                            var mifareUID = mifareCard.GetData();
+                            if (mifareUID != null)
+                            {
+                                string uidString = BitConverter.ToString(mifareUID);
+                                ProcessUID(uidString);
+                            }
+                        }
+                        else if (isNTAG215)
+                        {
+                            // NTAG215-specific UID handling
+                            var command = new CommandApdu(IsoCase.Case2Short, isoReader.ActiveProtocol)
+                            {
+                                CLA = 0x00,
+                                INS = 0x30, // READ command for NTAG215
+                                P1 = 0x00,  // Page number for UID
+                                Le = 16
+                            };
+                            var response = isoReader.Transmit(command);
+                            if (response.HasData)
+                            {
+                                string uidString = BitConverter.ToString(response.GetData());
+                                ProcessUID(uidString);
                             }
                         }
                         else
                         {
-                            ResetUID();  // Reset UID if no card is detected
+                            ResetUID(); // Unknown card type or no card detected
                         }
                     }
                 }
@@ -141,22 +210,55 @@ public class MifareCardReader : MonoBehaviour
         }
     }
 
+    // Helper method to process and display UID
+    private void ProcessUID(string uidString)
+    {
+        if (!uidDataDictionary.ContainsKey(uidString))
+        {
+            currentUID = uidString;
+            uidDataDictionary[uidString] = GetUIDDescription(uidString); // Add UID with description
+            DisplayUIDLabel(uidDataDictionary[uidString]);
+        }
+    }
+
+
     private void ResetUID()
     {
         currentUID = null;
         DisplayUIDLabel("None");
     }
 
-    private void ResetScannedUIDs()
+    private void ResetUIDData()
     {
-        scannedUIDs.Clear();  // Clear the set of scanned UIDs
+        uidDataDictionary.Clear();  // Clear the dictionary of UIDs and associated data
         Debug.Log("Scanned UIDs have been reset.");
     }
 
-    private void DisplayUIDLabel(string uid)
+    private string GetUIDDescription(string uid)
     {
-        Debug.Log("Current UID: " + uid);
+        // Try to get the description from the dictionary
+        return uidDescriptions.TryGetValue(uid, out var description) ? description : "Unknown Device";
     }
+
+    private void DisplayUIDLabel(string uidDescription)
+    {
+        Debug.Log("Detected Device: " + uidDescription);
+    }
+    public string GetLastScannedUIDDescription()
+    {
+        // Check if there is a current UID and return its description if available
+        if (currentUID != null && uidDataDictionary.TryGetValue(currentUID, out var description))
+        {
+            return description;
+        }
+        return "No card scanned or unknown device";
+    }
+
+    public string GetLastScannedUID()
+    {
+        return currentUID;
+    }
+
 
     private bool IsEmpty(ICollection<string> readerNames) =>
         readerNames == null || readerNames.Count < 1;

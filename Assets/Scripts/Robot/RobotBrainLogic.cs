@@ -10,7 +10,7 @@ public class RobotBrainLogic : MonoBehaviour
     [SerializeField]
     private List<BodyPart> bodyPartsToRepair = new List<BodyPart>();
     private List<BodyPart> selectedParts = new List<BodyPart>();
-    
+
     private List<string> idleDialogues = new List<string>
     {
         "I hope you can fix me soon...",
@@ -20,43 +20,33 @@ public class RobotBrainLogic : MonoBehaviour
         "I’m counting on you to repair me!"
     };
 
+    private bool isRepairInProgress = false; // Track if a repair is in progress
     private float idleSpeakInterval = 10f;
     private float timeSinceLastSpeak;
 
-    private bool isDisasterActive = false; // Track if a disaster is active
-    public bool canEndRound = false;
+    private bool canEndRound = false;
+
+    public bool IsRepairInProgress => isRepairInProgress;  // Read-only property
 
     void Start()
     {
         StartNewGame();
-        timeSinceLastSpeak = idleSpeakInterval; // initialize to trigger an initial speak
+        timeSinceLastSpeak = idleSpeakInterval;
     }
 
     void Update()
     {
-        // End round with Space key
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (!canEndRound)
             {
-                // Confirm disaster action
                 canEndRound = true;
             }
             else
             {
-                // If no disaster, end the round directly
                 EndRound();
             }
         }
-
-        // Trigger random idle speak at intervals
-        // Uncomment if you want idle speak to occur
-        // timeSinceLastSpeak += Time.deltaTime;
-        // if (timeSinceLastSpeak >= idleSpeakInterval)
-        // {
-        //     RandomIdleSpeak();
-        //     timeSinceLastSpeak = 0;
-        // }
     }
 
     void StartNewGame()
@@ -97,19 +87,21 @@ public class RobotBrainLogic : MonoBehaviour
 
     void EndRound()
     {
-        // Check if a disaster should occur before reducing rounds
         DisasterLogic.Instance.CheckForDisaster(difficultyLevel, ref roundsBeforeDeadline);
 
         if (roundsBeforeDeadline > 0)
         {
-            Debug.Log($"Rounds left before deadline: {roundsBeforeDeadline}");
+            foreach (var part in selectedParts)
+            {
+                part.attemptedToRepair = false;
+            }
         }
         else
         {
             CheckGameOver();
         }
 
-        roundsBeforeDeadline--; // Decrement rounds after confirming disaster
+        roundsBeforeDeadline--;
     }
 
     void CheckGameOver()
@@ -143,10 +135,11 @@ public class RobotBrainLogic : MonoBehaviour
     void NextDeadline()
     {
         difficultyLevel++;
-        roundsBeforeDeadline = 5; // Reset rounds for the next deadline
+        roundsBeforeDeadline = 5;
         Debug.Log("Next Deadline started");
 
-        DisasterLogic.Instance.ResetDisasterForNewDeadline(); // Reset disaster for new deadline
+        DisasterLogic.Instance.ResetDisasterForNewDeadline();
+        MifareCardReader.Instance.ResetCards();
         RandomizeBodyPartRequirements();
     }
 
@@ -159,5 +152,11 @@ public class RobotBrainLogic : MonoBehaviour
             DialogueManager.Instance.QueueDialogue(randomDialogue);
             Debug.Log($"Idle Speak: {randomDialogue}");
         }
+    }
+
+        // Provide the selected parts list to the BodyPart script
+    public List<BodyPart> GetSelectedParts()
+    {
+        return selectedParts;
     }
 }

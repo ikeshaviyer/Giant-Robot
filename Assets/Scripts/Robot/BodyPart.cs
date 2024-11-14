@@ -1,18 +1,29 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class BodyPart : MonoBehaviour
 {
     public bool isRepaired = false;
     public bool canRepair = false;
-    
+    public bool attemptedToRepair = false;
+
     // Resource requirements
     public int requiredCircuits;
     public int requiredEnergyCores;
     public int requiredScrapMetal;
 
+    public RobotBrainLogic robotBrain;
+
     void Start()
     {
         isRepaired = true;
+        robotBrain = FindObjectOfType<RobotBrainLogic>(); // Find RobotBrainLogic in the scene
+    }
+
+    void Update()
+    {
+        CheckRepairSpot();
     }
 
     public void SetRandomResourceRequirement()
@@ -36,18 +47,111 @@ public class BodyPart : MonoBehaviour
         DialogueManager.Instance.QueueDialogue($"Required resources for {gameObject.name}: Circuits = {requiredCircuits}, Energy Cores = {requiredEnergyCores}, Scrap Metal = {requiredScrapMetal}");
     }
 
-    public void AttemptRepair()
+    public async void AttemptRepair()
     {
-        if (canRepair && !isRepaired)
+        HashSet<string> processedUIDs = new HashSet<string>(); // Track UIDs that have been used
+
+        while (!isRepaired)
         {
-            Debug.Log($"Attempting to repair {gameObject.name} using Circuits: {requiredCircuits}, Energy Cores: {requiredEnergyCores}, Scrap Metal: {requiredScrapMetal}");
-            // Call to scan resources dynamically would occur here
+            Debug.Log($"Scan required resources for {gameObject.name}");
+
+            MifareCardReader.StartReading();
+
+            // Continuously check for a new scanned UID
+            while (!isRepaired)
+            {
+                string lastScannedDescription = MifareCardReader.Instance.GetLastScannedUIDDescription();
+                string lastScannedUID = MifareCardReader.Instance.GetLastScannedUID();
+
+                // Ensure UID and description are not null and that UID hasn't been processed yet
+                if (!string.IsNullOrEmpty(lastScannedDescription) && !string.IsNullOrEmpty(lastScannedUID) && !processedUIDs.Contains(lastScannedUID))
+                {
+                    // Check and process the resource type
+                    if (lastScannedDescription == "Circuit" || lastScannedDescription == "Scrap Metal" || lastScannedDescription == "Energy Core")
+                    {
+                        // Subtract the resource and mark UID as processed
+                        SubtractResource(lastScannedDescription);
+                        processedUIDs.Add(lastScannedUID);
+
+                        Debug.Log($"Processed resource: {lastScannedDescription} with UID {lastScannedUID}");
+
+                        // Check if all requirements are fulfilled
+                        if (requiredCircuits <= 0 && requiredScrapMetal <= 0 && requiredEnergyCores <= 0)
+                        {
+                            Repair();
+                            break;
+                        }
+                    }
+                }
+
+                await Task.Delay(500); // Adjust delay as needed
+
+                // Check if the repair process should stop
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    MifareCardReader.StopReading();
+                    break;
+                }
+            }
+        }
+    }
+
+    // Resource Subtraction
+    private void SubtractResource(string resourceType)
+    {
+        switch (resourceType)
+        {
+            case "Circuit":
+                requiredCircuits--;
+                Debug.Log("Circuit resource used for repair.");
+                break;
+            case "Scrap Metal":
+                requiredScrapMetal--;
+                Debug.Log("Scrap Metal resource used for repair.");
+                break;
+            case "Energy Core":
+                requiredEnergyCores--;
+                Debug.Log("Energy Core resource used for repair.");
+                break;
         }
     }
 
     public void Repair()
     {
         isRepaired = true;
-        Debug.Log($"{gameObject.name} repaired successfully!");
+        canRepair = false;
+        DialogueManager.Instance.QueueDialogue($"{gameObject.name} repaired successfully!");
+    }
+
+    public void CheckRepairLogic()
+    {
+        if (!attemptedToRepair && !isRepaired)
+        {
+            // Check if no part can be repaired
+            bool anyCanRepair = false;
+            foreach (var part in robotBrain.GetSelectedParts())
+            {
+                if (part.canRepair)
+                {
+                    anyCanRepair = true;
+                    break;
+                }
+            }
+
+            // If no part is ready for repair, allow this part to start repairing
+            if (!anyCanRepair)
+            {
+                canRepair = true;
+                AttemptRepair();
+                attemptedToRepair = true;
+            }
+        }
+    }
+        public virtual void CheckRepairSpot()
+    {
+        if (Input.GetKeyDown(KeyCode.R) && !attemptedToRepair && !isRepaired && !robotBrain.IsRepairInProgress) // Check if a repair is not already in progress
+        {
+            CheckRepairLogic();
+        }
     }
 }

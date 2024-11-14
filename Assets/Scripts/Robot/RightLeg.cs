@@ -13,6 +13,14 @@ public class RightLeg : BodyPart
     // Update is called once per frame
     void Update()
     {
-        
+        CheckRepairSpot();
+    }
+
+    public override void CheckRepairSpot()
+    {
+        if (Input.GetKeyDown(KeyCode.S) && !attemptedToRepair && !isRepaired)
+        {
+            CheckRepairLogic();
+        }
     }
 }

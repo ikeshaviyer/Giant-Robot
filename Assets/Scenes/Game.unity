@@ -210,9 +210,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isRepaired: 0
   canRepair: 0
+  attemptedToRepair: 0
   requiredCircuits: 0
   requiredEnergyCores: 0
   requiredScrapMetal: 0
+  robotBrain: {fileID: 1256374741}
 --- !u!4 &270714752
 Transform:
   m_ObjectHideFlags: 0
@@ -356,9 +358,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isRepaired: 0
   canRepair: 0
+  attemptedToRepair: 0
   requiredCircuits: 0
   requiredEnergyCores: 0
   requiredScrapMetal: 0
+  robotBrain: {fileID: 1256374741}
 --- !u!4 &499913929
 Transform:
   m_ObjectHideFlags: 0
@@ -668,9 +672,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isRepaired: 0
   canRepair: 0
+  attemptedToRepair: 0
   requiredCircuits: 0
   requiredEnergyCores: 0
   requiredScrapMetal: 0
+  robotBrain: {fileID: 1256374741}
 --- !u!4 &823967295
 Transform:
   m_ObjectHideFlags: 0
@@ -805,7 +811,6 @@ MonoBehaviour:
   - {fileID: 270714751}
   - {fileID: 1736579924}
   - {fileID: 499913928}
-  canEndRound: 0
 --- !u!212 &1256374742
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -924,9 +929,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isRepaired: 0
   canRepair: 0
+  attemptedToRepair: 0
   requiredCircuits: 0
   requiredEnergyCores: 0
   requiredScrapMetal: 0
+  robotBrain: {fileID: 1256374741}
 --- !u!4 &1736579925
 Transform:
   m_ObjectHideFlags: 0
