@@ -11,17 +11,7 @@ public class RobotBrainLogic : MonoBehaviour
     private List<BodyPart> bodyPartsToRepair = new List<BodyPart>();
     private List<BodyPart> selectedParts = new List<BodyPart>();
 
-    private List<string> idleDialogues = new List<string>
-    {
-        "I hope you can fix me soon...",
-        "I'm starting to feel a little rusty.",
-        "You're my only hope for survival!",
-        "Please hurry, my systems are failing...",
-        "I’m counting on you to repair me!"
-    };
-
     private bool isRepairInProgress = false; // Track if a repair is in progress
-    private float idleSpeakInterval = 10f;
     private float timeSinceLastSpeak;
 
     private bool canEndRound = false;
@@ -31,7 +21,6 @@ public class RobotBrainLogic : MonoBehaviour
     void Start()
     {
         StartNewGame();
-        timeSinceLastSpeak = idleSpeakInterval;
     }
 
     void Update()
@@ -141,17 +130,6 @@ public class RobotBrainLogic : MonoBehaviour
         DisasterLogic.Instance.ResetDisasterForNewDeadline();
         MifareCardReader.Instance.ResetCards();
         RandomizeBodyPartRequirements();
-    }
-
-    void RandomIdleSpeak()
-    {
-        if (DialogueManager.Instance != null)
-        {
-            int randomIndex = Random.Range(0, idleDialogues.Count);
-            string randomDialogue = idleDialogues[randomIndex];
-            DialogueManager.Instance.QueueDialogue(randomDialogue);
-            Debug.Log($"Idle Speak: {randomDialogue}");
-        }
     }
 
         // Provide the selected parts list to the BodyPart script
