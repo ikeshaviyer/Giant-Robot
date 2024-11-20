@@ -87,7 +87,7 @@ public class BodyPart : MonoBehaviour
                 await Task.Delay(500); // Adjust delay as needed
 
                 // Check if the repair process should stop
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (Input.GetKeyDown(KeyCode.Space) || SerialReader.Instance.ButtonPressed)
                 {
                     MifareCardReader.StopReading();
                     break;

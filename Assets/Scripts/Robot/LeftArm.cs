@@ -18,7 +18,7 @@ public class LeftArm : BodyPart
 
     public override void CheckRepairSpot()
     {
-        if (Input.GetKeyDown(KeyCode.Q) && !attemptedToRepair && !isRepaired)
+        if ((Input.GetKeyDown(KeyCode.Q) || SerialReader.Instance.LArm) && !attemptedToRepair && !isRepaired)
         {
             CheckRepairLogic();
         }

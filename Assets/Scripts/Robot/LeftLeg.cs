@@ -18,7 +18,7 @@ public class LeftLeg : BodyPart
 
     public override void CheckRepairSpot()
     {
-        if (Input.GetKeyDown(KeyCode.A) && !attemptedToRepair && !isRepaired)
+        if ((Input.GetKeyDown(KeyCode.A)|| SerialReader.Instance.LLeg) && !attemptedToRepair && !isRepaired)
         {
             CheckRepairLogic();
         }
