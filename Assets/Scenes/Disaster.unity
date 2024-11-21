@@ -379,6 +379,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 493168532173545171, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_EffectColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 493168532173545171, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_EffectColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 493168532173545171, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_EffectColor.r
+      value: 0.18039216
+      objectReference: {fileID: 0}
+    - target: {fileID: 619751198810499270, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_EffectColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 619751198810499270, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_EffectColor.r
+      value: 0.18039216
+      objectReference: {fileID: 0}
     - target: {fileID: 892559380297423279, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -459,9 +479,69 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2317460117143642017, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_fontColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2317460117143642017, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_fontColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2317460117143642017, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_fontColor.r
+      value: 0.18039216
+      objectReference: {fileID: 0}
+    - target: {fileID: 2317460117143642017, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278255406
+      objectReference: {fileID: 0}
+    - target: {fileID: 2565453905563295013, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_fontColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2565453905563295013, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_fontColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2565453905563295013, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_fontColor.r
+      value: 0.18039216
+      objectReference: {fileID: 0}
+    - target: {fileID: 2565453905563295013, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278255406
+      objectReference: {fileID: 0}
+    - target: {fileID: 2707689885027010068, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_EffectColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2707689885027010068, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_EffectColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2707689885027010068, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_EffectColor.r
+      value: 0.18039216
+      objectReference: {fileID: 0}
     - target: {fileID: 3768447105772559472, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
       propertyPath: m_Name
       value: Disaster Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 7158300900882372431, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_fontColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7158300900882372431, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_fontColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7158300900882372431, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_fontColor.r
+      value: 0.18039216
+      objectReference: {fileID: 0}
+    - target: {fileID: 7158300900882372431, guid: 83232e4b1c5fb384393eae25ed583ec1, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278255406
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
