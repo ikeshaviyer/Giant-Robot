@@ -4,20 +4,29 @@ using UnityEngine;
 
 public class IdleScreen : MonoBehaviour
 {
+    [Header("Canvas Groups")]
     public CanvasGroup idleScreenCanvasGroup;
+    public CanvasGroup missionDeadlineCanvasGroup;
 
-    void Start()
+    private void Start()
     {
-        StartCoroutine(IdleScreenCoroutine());
+        idleScreenCanvasGroup.alpha = 0;
+    }
+
+    public void Update()
+    {
+        if (missionDeadlineCanvasGroup != null && missionDeadlineCanvasGroup.alpha == 1)
+        {
+            StartCoroutine(IdleScreenCoroutine());
+        }
     }
 
     private IEnumerator IdleScreenCoroutine()
     {
         while (true)
         {
-            yield return new WaitForSeconds(20);  // 20 seconds of inactivity, can be shortened/lengthened later
+            yield return new WaitForSeconds(15);  // 15 seconds of inactivity, can be shortened/lengthened later
             idleScreenCanvasGroup.alpha = 1;
-            // Add art stuff here later etc.
 
             // Wait until any input is detected
             while (true)
@@ -30,10 +39,5 @@ public class IdleScreen : MonoBehaviour
                 yield return null;
             }
         }
-    }
-
-    public void ReturnToDeadline()  // Called by a button in the idle screen (feel free to change if another way is preferred)
-    {
-        idleScreenCanvasGroup.alpha = 0;
     }
 }
