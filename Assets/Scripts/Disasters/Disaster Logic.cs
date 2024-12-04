@@ -6,6 +6,7 @@ public class DisasterLogic : MonoBehaviour
     public static DisasterLogic Instance { get; private set; }
 
     private bool disasterOccurredThisDeadline = false;
+    private AudioSource audioSource;
 
     [SerializeField]
     private List<Disaster> easyDisasters; // List of disasters for Easy difficulty
@@ -21,6 +22,7 @@ public class DisasterLogic : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject); // Keep this instance across scenes
+            audioSource = GetComponent<AudioSource>();
         }
         else
         {
@@ -32,6 +34,19 @@ public class DisasterLogic : MonoBehaviour
     {
         // Initialize disaster lists
         InitializeDisasters();
+    }
+
+    public void PlaySound(AudioClip clip)
+    {
+        if (clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+        else
+        {
+            Debug.LogWarning("No audio clip assigned to this disaster.");
+            return;
+        }
     }
 
     private void InitializeDisasters()

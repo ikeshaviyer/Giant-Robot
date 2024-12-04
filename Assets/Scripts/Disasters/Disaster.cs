@@ -6,11 +6,12 @@ public class Disaster
     public string name; // Name of the disaster
     public float probability; // Probability of this disaster occurring based on difficulty
     public string message; // Message to display when the disaster occurs
+    public AudioClip sound; // Sound to play when the disaster occurs
 
     // Method to apply the disaster effect
     public virtual void ApplyEffect(ref int roundsBeforeDeadline)
     {
-        // Default effect can be overridden by subclasses
+        DisasterLogic.Instance.PlaySound(sound);
         Debug.Log($"{name} occurred! No specific effect defined.");
     }
 }
