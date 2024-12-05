@@ -5,6 +5,9 @@ using UnityEngine;
 public class DeadlineScreen : MonoBehaviour
 {
     public CanvasGroup confirmationCanvasGroup;
+    public AudioSource audioManager;
+    public AudioClip clickSound;
+
     void Start() 
     {
         HideConfirmation();
@@ -15,20 +18,19 @@ public class DeadlineScreen : MonoBehaviour
         if (confirmationCanvasGroup.alpha == 0)
         {
             ShowConfirmation();
-        }
-        else
-        {
-            HideConfirmation();
+            PlayClickSound();
         }
     }
 
     public void PressYes()
     {
+        PlayClickSound();
         StartCoroutine(ReturnToTitleCoroutine());
     }
 
     public void PressNo()
     {
+        PlayClickSound();
         HideConfirmation();
     }
 
@@ -53,5 +55,28 @@ public class DeadlineScreen : MonoBehaviour
         confirmationCanvasGroup.alpha = 0;
         confirmationCanvasGroup.interactable = false;
         confirmationCanvasGroup.blocksRaycasts = false;
+    }
+
+    private void PlayClickSound()
+    {
+        if (audioManager != null && clickSound != null)
+        {
+            audioManager.PlayOneShot(clickSound);
+            StartCoroutine(LerpPitch(audioManager, Random.Range(1.2f, 1.15f), Random.Range(1f, 0.95f), clickSound.length));
+        }
+    }
+
+    private IEnumerator LerpPitch(AudioSource source, float startPitch, float endPitch, float duration)
+    {
+        float elapsedTime = 0f;
+        source.pitch = startPitch;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            source.pitch = Mathf.Lerp(startPitch, endPitch, elapsedTime / duration);
+            yield return null;
+        }
+        source.pitch = endPitch;
     }
 }

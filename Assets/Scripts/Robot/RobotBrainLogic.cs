@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RobotBrainLogic : MonoBehaviour
 {
+    [Header("Game Logic")]
     public int roundsBeforeDeadline = 5;
     public static int difficultyLevel = 1;
 
@@ -11,11 +13,14 @@ public class RobotBrainLogic : MonoBehaviour
     private List<BodyPart> bodyPartsToRepair = new List<BodyPart>();
     private List<BodyPart> selectedParts = new List<BodyPart>();
 
+
+    [Header("UI Elements")]
+    public CanvasGroup winGameCanvasGroup;
+    public CanvasGroup loseGameCanvasGroup;
+
     private bool isRepairInProgress = false; // Track if a repair is in progress
     private float timeSinceLastSpeak;
-
     private bool canEndRound = false;
-
     public bool IsRepairInProgress => isRepairInProgress;  // Read-only property
 
     void Start()
@@ -107,7 +112,7 @@ public class RobotBrainLogic : MonoBehaviour
 
         if (allRepaired)
         {
-            NextDeadline();
+            DeadlineWin();
         }
         else
         {
@@ -115,14 +120,23 @@ public class RobotBrainLogic : MonoBehaviour
         }
     }
 
-    void GameOver()
+    void DeadlineWin()
     {
-        Debug.Log("GAME OVER - You didn't repair all required parts in time.");
-        DialogueManager.Instance.QueueDialogue("NOOOOOOOOOOO YOU'RE TOO LATE");
+        winGameCanvasGroup.alpha = 1;
+        winGameCanvasGroup.interactable = true;
+        winGameCanvasGroup.blocksRaycasts = true;
     }
 
-    void NextDeadline()
+    void GameOver()
     {
+        loseGameCanvasGroup.alpha = 1;
+        loseGameCanvasGroup.interactable = true;
+        loseGameCanvasGroup.blocksRaycasts = true;
+    }
+
+    public void NextDeadline()
+    {
+        HideWinGameCanvas();
         difficultyLevel++;
         roundsBeforeDeadline = 5;
         Debug.Log("Next Deadline started");
@@ -136,5 +150,26 @@ public class RobotBrainLogic : MonoBehaviour
     public List<BodyPart> GetSelectedParts()
     {
         return selectedParts;
+    }
+
+    public void ReturnToTitle()
+    {
+        StartCoroutine(ReturnToTitleCoroutine());
+    }
+
+    private IEnumerator ReturnToTitleCoroutine()
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("MainMenu");
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+    }
+
+    private void HideWinGameCanvas()
+    {
+        winGameCanvasGroup.alpha = 0;
+        winGameCanvasGroup.interactable = false;
+        winGameCanvasGroup.blocksRaycasts = false;
     }
 }

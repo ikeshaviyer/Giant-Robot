@@ -59,8 +59,22 @@ public class ButtonPress : MonoBehaviour
     {
         if (audioManager != null && clickSound != null)
         {
-            audioManager.pitch = Random.Range(0.95f, 1.2f);
             audioManager.PlayOneShot(clickSound);
+            StartCoroutine(LerpPitch(audioManager, Random.Range(1.2f, 1.15f), Random.Range(1f, 0.95f), clickSound.length));
         }
+    }
+
+    private IEnumerator LerpPitch(AudioSource source, float startPitch, float endPitch, float duration)
+    {
+        float elapsedTime = 0f;
+        source.pitch = startPitch;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            source.pitch = Mathf.Lerp(startPitch, endPitch, elapsedTime / duration);
+            yield return null;
+        }
+        source.pitch = endPitch;
     }
 }
