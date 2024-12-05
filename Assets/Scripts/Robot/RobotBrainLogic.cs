@@ -2,19 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class RobotBrainLogic : MonoBehaviour
 {
     [Header("Game Logic")]
     public int roundsBeforeDeadline = 5;
     public static int difficultyLevel = 1;
+    private int deadlineNumber = 1;
 
     [SerializeField]
     private List<BodyPart> bodyPartsToRepair = new List<BodyPart>();
     private List<BodyPart> selectedParts = new List<BodyPart>();
 
-
     [Header("UI Elements")]
+    public TextMeshProUGUI deadlineText;
+    public TextMeshProUGUI roundsLeftText;
     public CanvasGroup winGameCanvasGroup;
     public CanvasGroup loseGameCanvasGroup;
 
@@ -46,6 +49,24 @@ public class RobotBrainLogic : MonoBehaviour
     void StartNewGame()
     {
         RandomizeBodyPartRequirements();
+        UpdateRoundsLeftText();
+        UpdateDeadlineText();
+    }
+
+    private void UpdateDeadlineText()
+    {
+        if (deadlineText != null)
+        {
+            deadlineText.text = $"Deadline Number {deadlineNumber}";
+        }
+    }
+
+    private void UpdateRoundsLeftText()
+    {
+        if (roundsLeftText != null)
+        {
+            roundsLeftText.text = $"Rounds Left: {roundsBeforeDeadline}";
+        }
     }
 
     public void RandomizeBodyPartRequirements()
@@ -62,7 +83,8 @@ public class RobotBrainLogic : MonoBehaviour
         foreach (var part in selectedParts)
         {
             part.isRepaired = false;
-            part.SetRandomResourceRequirement();
+            part.SetRandomResourceRequirement(); // Randomize resources
+            Debug.Log($"Part: {part.name} requires {part.requiredCircuits} circuits, {part.requiredEnergyCores} energy cores, and {part.requiredScrapMetal} scrap metal.");
         }
     }
 
@@ -96,6 +118,7 @@ public class RobotBrainLogic : MonoBehaviour
         }
 
         roundsBeforeDeadline--;
+        UpdateRoundsLeftText();
     }
 
     void CheckGameOver()
@@ -138,15 +161,17 @@ public class RobotBrainLogic : MonoBehaviour
     {
         HideWinGameCanvas();
         difficultyLevel++;
+        deadlineNumber++;
         roundsBeforeDeadline = 5;
         Debug.Log("Next Deadline started");
 
         DisasterLogic.Instance.ResetDisasterForNewDeadline();
         MifareCardReader.Instance.ResetCards();
         RandomizeBodyPartRequirements();
+        UpdateRoundsLeftText();
+        UpdateDeadlineText();
     }
 
-        // Provide the selected parts list to the BodyPart script
     public List<BodyPart> GetSelectedParts()
     {
         return selectedParts;

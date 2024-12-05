@@ -1,18 +1,26 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
 
 public class BodyPart : MonoBehaviour
 {
+    [Header("Repair Logic")]
     public bool isRepaired = false;
     public bool canRepair = false;
     public bool attemptedToRepair = false;
 
-    // Resource requirements
+    [Header("Resource Requirements")]
     public int requiredCircuits;
     public int requiredEnergyCores;
     public int requiredScrapMetal;
 
+    [Header("UI Elements")]
+    public TextMeshProUGUI circuitsText;
+    public TextMeshProUGUI energyCoresText;
+    public TextMeshProUGUI scrapMetalText;
+
+    [Header("References")]
     public RobotBrainLogic robotBrain;
 
     void Start()
@@ -43,7 +51,21 @@ public class BodyPart : MonoBehaviour
 
         requiredScrapMetal = totalAmount; // Remaining goes to Scrap Metal
 
-        // Display the resource requirement using DialogueManager
+        // Display the resource requirements on the UI
+        if (circuitsText != null)
+        {
+            circuitsText.text = requiredCircuits.ToString();
+        }
+        if (energyCoresText != null)
+        {
+            energyCoresText.text = requiredEnergyCores.ToString();
+        }
+        if (scrapMetalText != null)
+        {
+            scrapMetalText.text = requiredScrapMetal.ToString();
+        }
+
+        // Can also display the resource requirement using DialogueManager
         DialogueManager.Instance.QueueDialogue($"Required resources for {gameObject.name}: Circuits = {requiredCircuits}, Energy Cores = {requiredEnergyCores}, Scrap Metal = {requiredScrapMetal}");
     }
 
