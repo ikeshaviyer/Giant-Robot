@@ -2339,8 +2339,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: BIG BOSS ROBOT
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 1e2f88a494c7f8a47b43bb098766bc49, type: 2}
-  m_sharedMaterial: {fileID: -8613899831020292412, guid: 1e2f88a494c7f8a47b43bb098766bc49, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4a731aac821d5a4428b4ae94e84287b8, type: 2}
+  m_sharedMaterial: {fileID: -7986069508225153761, guid: 4a731aac821d5a4428b4ae94e84287b8, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
