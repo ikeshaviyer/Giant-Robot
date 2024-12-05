@@ -22,9 +22,21 @@ public class MifareCardReader : MonoBehaviour
     // Dictionary to manage UID descriptions
     private Dictionary<string, string> uidDescriptions = new Dictionary<string, string>
     {
-        { "04-03-DA-43-21-02-89", "Circuit" },
-        { "04-F3-0C-41-21-02-89", "Scrap Metal" },
-        { "04-63-E0-62-21-02-89", "Energy Core" }
+        { "04-63-B9-38-21-02-89", "Scrap Metal" },
+        { "04-F3-CE-74-21-02-89", "Scrap Metal" },
+        { "04-33-BB-68-21-02-89", "Scrap Metal" },
+        { "04-E3-88-4A-21-02-89", "Scrap Metal" },
+
+        { "04-63-4B-35-21-02-89", "Circuit" },
+        { "04-53-9B-64-21-02-89", "Circuit" },
+        { "04-33-0D-47-21-02-89", "Circuit" },
+        { "04-63-6E-3F-21-02-89", "Circuit" },
+
+        { "04-23-2D-74-21-02-89", "Energy Core" },
+        { "04-F3-5B-45-21-02-89", "Energy Core" },
+        { "04-F3-63-3B-21-02-89", "Energy Core" },
+        { "04-43-01-63-21-02-89", "Energy Core" }
+
         // Add or remove UIDs as needed
     };
 

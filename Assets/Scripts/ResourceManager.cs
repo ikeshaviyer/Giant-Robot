@@ -7,9 +7,9 @@ public class ResourceManager : MonoBehaviour
     // Base resource amounts
     private Dictionary<string, int> maxResourceAmounts = new Dictionary<string, int>
     {
-        { "Scrap Metal", 5 },
-        { "Energy Cores", 5 },
-        { "Circuits", 5 }
+        { "Scrap Metal", 4 },
+        { "Energy Cores", 4 },
+        { "Circuits", 4 }
     };
 
     // This dictionary keeps track of resources that have been scanned
