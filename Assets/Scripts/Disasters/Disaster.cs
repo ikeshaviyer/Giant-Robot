@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -5,13 +7,14 @@ public class Disaster
 {
     public string name; // Name of the disaster
     public float probability; // Probability of this disaster occurring based on difficulty
-    public string message; // Message to display when the disaster occurs
-    public AudioClip sound; // Sound to play when the disaster occurs
+    public string message; // Message to display when the disaster occurss
+    public AudioClip sound; // Add this in the base Disaster class
+
 
     // Method to apply the disaster effect
     public virtual void ApplyEffect(ref int roundsBeforeDeadline)
     {
-        DisasterLogic.Instance.PlaySound(sound);
+
         Debug.Log($"{name} occurred! No specific effect defined.");
     }
 }
@@ -26,6 +29,7 @@ public class RoundReductionDisaster : Disaster
         roundsBeforeDeadline = Mathf.Max(0, roundsBeforeDeadline - 1);
         Debug.Log($"{name} has occurred! Rounds remaining reduced by 1.");
         DialogueManager.Instance.QueueDialogue(message);
+        DisasterLogic.Instance.PlaySound(sound);
     }
 }
 
@@ -38,6 +42,7 @@ public class ResourceDrainDisaster : Disaster
         Debug.Log($"{name} has occurred! Resources are reduced by 1.");
         // Implement resource reduction logic here
         DialogueManager.Instance.QueueDialogue(message);
+        DisasterLogic.Instance.PlaySound(sound);
     }
 }
 
@@ -50,6 +55,7 @@ public class ActionDrainDisaster : Disaster
         Debug.Log($"{name} has occurred! Actions are reduced by 1.");
         // Implement resource reduction logic here
         DialogueManager.Instance.QueueDialogue(message);
+        DisasterLogic.Instance.PlaySound(sound);
     }
 }
 
@@ -63,6 +69,7 @@ public class MediumRoundReductionDisaster : Disaster
         roundsBeforeDeadline = Mathf.Max(0, roundsBeforeDeadline - 2);
         Debug.Log($"{name} has occurred! Rounds remaining reduced by 2");
         DialogueManager.Instance.QueueDialogue(message);
+        DisasterLogic.Instance.PlaySound(sound);    
     }
 }
 
@@ -75,6 +82,7 @@ public class MediumResourceDrainDisaster : Disaster
         Debug.Log($"{name} has occurred! Resources are reduced by 2.");
         // Implement resource reduction logic here
         DialogueManager.Instance.QueueDialogue(message);
+        DisasterLogic.Instance.PlaySound(sound);
     }
 }
 
@@ -87,6 +95,7 @@ public class MediumActionDrainDisaster : Disaster
         Debug.Log($"{name} has occurred! Actions are reduced by 2.");
         // Implement resource reduction logic here
         DialogueManager.Instance.QueueDialogue(message);
+        DisasterLogic.Instance.PlaySound(sound);
     }
 }
 
@@ -100,6 +109,7 @@ public class HardRoundReductionDisaster : Disaster
         roundsBeforeDeadline = Mathf.Max(0, roundsBeforeDeadline - 1);
         Debug.Log($"{name} has occurred! Rounds remaining reduced by 1.");
         DialogueManager.Instance.QueueDialogue(message);
+        DisasterLogic.Instance.PlaySound(sound);
     }
 }
 
@@ -112,6 +122,7 @@ public class HardResourceDrainDisaster : Disaster
         Debug.Log($"{name} has occurred! Resources are reduced by 1.");
         // Implement resource reduction logic here
         DialogueManager.Instance.QueueDialogue(message);
+        DisasterLogic.Instance.PlaySound(sound);
     }
 }
 
@@ -124,5 +135,6 @@ public class HardActionDrainDisaster : Disaster
         Debug.Log($"{name} has occurred! Actions are reduced by 1.");
         // Implement resource reduction logic here
         DialogueManager.Instance.QueueDialogue(message);
+        DisasterLogic.Instance.PlaySound(sound);
     }
 }

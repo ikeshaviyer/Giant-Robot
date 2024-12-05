@@ -7,6 +7,7 @@ public class DisasterLogic : MonoBehaviour
 
     private bool disasterOccurredThisDeadline = false;
     private AudioSource audioSource;
+    private AudioClip sound;
 
     [SerializeField]
     private List<Disaster> easyDisasters; // List of disasters for Easy difficulty
@@ -53,9 +54,9 @@ public class DisasterLogic : MonoBehaviour
     {
         easyDisasters = new List<Disaster>
         {
-            new RoundReductionDisaster { name = "Round Reduction", probability = 0.6f, message = "Rounds have been drastically reduced!" },
-            new ResourceDrainDisaster { name = "Resource Drain", probability = 0.5f, message = "Most resources have been drained!" },
-            new ActionDrainDisaster { name = "Action Drain", probability = 0.4f, message = "Action points have been severely reduced!" },
+            new RoundReductionDisaster { name = "Round Reduction", probability = 0.6f, message = "Rounds have been drastically reduced!"},
+            new ResourceDrainDisaster { name = "Resource Drain", probability = 0.5f, message = "Most resources have been drained!"},
+            new ActionDrainDisaster { name = "Action Drain", probability = 0.4f, message = "Action points have been severely reduced!"},
             // Add more Easy disasters here
         };
 

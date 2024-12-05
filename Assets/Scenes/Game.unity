@@ -7259,6 +7259,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DisasterManager
       objectReference: {fileID: 0}
+    - target: {fileID: 2412987611622025191, guid: 83cd20ecf0726e440a6668816e4c3efe, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -46,44 +46,44 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   easyDisasters:
-  - name: 
-    probability: 0
-    message: 
-    sound: {fileID: 0}
-  - name: 
-    probability: 0
-    message: 
-    sound: {fileID: 0}
-  - name: 
-    probability: 0
-    message: 
-    sound: {fileID: 0}
+  - name: Round Reduction
+    probability: 0.6
+    message: Rounds have been drastically reduced!
+    sound: {fileID: 8300000, guid: db6db4dfcb9ae9e4ba99932527f2a66f, type: 3}
+  - name: Resource Drain
+    probability: 0.5
+    message: Most resources have been drained!
+    sound: {fileID: 8300000, guid: ffc58a2c8167e3242b7e3b010be35ff3, type: 3}
+  - name: Action Drain
+    probability: 0.4
+    message: Action points have been severely reduced!
+    sound: {fileID: 8300000, guid: 3bf0b0ab1452ce149bc87c1ac937c517, type: 3}
   mediumDisasters:
-  - name: 
-    probability: 0
-    message: 
-    sound: {fileID: 0}
-  - name: 
-    probability: 0
-    message: 
-    sound: {fileID: 0}
-  - name: 
-    probability: 0
-    message: 
-    sound: {fileID: 0}
+  - name: Medium Round Reduction
+    probability: 0.6
+    message: Rounds have been drastically reduced!
+    sound: {fileID: 8300000, guid: 2d54d9e0319bf19428592f5cd316cb56, type: 3}
+  - name: Medium Resource Drain
+    probability: 0.5
+    message: Most resources have been drained!
+    sound: {fileID: 8300000, guid: 2300c3847d330a94685c79cc6b4399f1, type: 3}
+  - name: Medium Action Drain
+    probability: 0.4
+    message: Action points have been severely reduced!
+    sound: {fileID: 8300000, guid: 0b8a3f34cf4c2ba4aac416086c8a9129, type: 3}
   catastrophicDisasters:
-  - name: 
-    probability: 0
-    message: 
-    sound: {fileID: 0}
-  - name: 
-    probability: 0
-    message: 
-    sound: {fileID: 0}
-  - name: 
-    probability: 0
-    message: 
-    sound: {fileID: 0}
+  - name: Catastrophic Round Reduction
+    probability: 0.6
+    message: Rounds have been drastically reduced!
+    sound: {fileID: 8300000, guid: 011e508384f4db34fa4e8e87f195ec2a, type: 3}
+  - name: Catastrophic Resource Drain
+    probability: 0.5
+    message: Most resources have been drained!
+    sound: {fileID: 8300000, guid: c3da92c5b6f34ad45ac6f1fba802bb31, type: 3}
+  - name: Catastrophic Action Drain
+    probability: 0.4
+    message: Action points have been severely reduced!
+    sound: {fileID: 8300000, guid: 4409f2482412896488b7c75262ea702b, type: 3}
 --- !u!82 &244465346384805357
 AudioSource:
   m_ObjectHideFlags: 0
