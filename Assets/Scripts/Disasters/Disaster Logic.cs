@@ -8,13 +8,11 @@ public class DisasterLogic : MonoBehaviour
     private bool disasterOccurredThisDeadline = false;
     private AudioSource audioSource;
     private AudioClip sound;
+    public List<AudioClip> disasterSounds;
 
-    [SerializeField]
-    private List<Disaster> easyDisasters; // List of disasters for Easy difficulty
-    [SerializeField]
-    private List<Disaster> mediumDisasters; // List of disasters for Medium difficulty
-    [SerializeField]
-    private List<Disaster> catastrophicDisasters; // List of disasters for Catastrophic difficulty
+    public List<Disaster> easyDisasters; // List of disasters for Easy difficulty
+    public List<Disaster> mediumDisasters; // List of disasters for Medium difficulty
+    public List<Disaster> catastrophicDisasters; // List of disasters for Catastrophic difficulty
 
     private void Awake()
     {
@@ -54,25 +52,25 @@ public class DisasterLogic : MonoBehaviour
     {
         easyDisasters = new List<Disaster>
         {
-            new RoundReductionDisaster { name = "Round Reduction", probability = 0.6f, message = "Rounds have been drastically reduced!"},
-            new ResourceDrainDisaster { name = "Resource Drain", probability = 0.5f, message = "Most resources have been drained!"},
-            new ActionDrainDisaster { name = "Action Drain", probability = 0.4f, message = "Action points have been severely reduced!"},
+            new RoundReductionDisaster { name = "Round Reduction", probability = 0.6f, message = "Rounds have been drastically reduced!", sound = disasterSounds[0]},
+            new ResourceDrainDisaster { name = "Resource Drain", probability = 0.5f, message = "Most resources have been drained!", sound = disasterSounds[1]},
+            new ActionDrainDisaster { name = "Action Drain", probability = 0.4f, message = "Action points have been severely reduced!", sound = disasterSounds[2]},
             // Add more Easy disasters here
         };
 
         mediumDisasters = new List<Disaster>
         {
-            new MediumRoundReductionDisaster { name = "Medium Round Reduction", probability = 0.6f, message = "Rounds have been drastically reduced!" },
-            new MediumResourceDrainDisaster { name = "Medium Resource Drain", probability = 0.5f, message = "Most resources have been drained!" },
-            new MediumActionDrainDisaster { name = "Medium Action Drain", probability = 0.4f, message = "Action points have been severely reduced!" },
+            new MediumRoundReductionDisaster { name = "Medium Round Reduction", probability = 0.6f, message = "Rounds have been drastically reduced!", sound = disasterSounds[3] },
+            new MediumResourceDrainDisaster { name = "Medium Resource Drain", probability = 0.5f, message = "Most resources have been drained!", sound = disasterSounds[4] },
+            new MediumActionDrainDisaster { name = "Medium Action Drain", probability = 0.4f, message = "Action points have been severely reduced!", sound = disasterSounds[5] },
             // Add more Medium disasters here
         };
 
         catastrophicDisasters = new List<Disaster>
         {
-            new HardRoundReductionDisaster { name = "Catastrophic Round Reduction", probability = 0.6f, message = "Rounds have been drastically reduced!" },
-            new HardResourceDrainDisaster { name = "Catastrophic Resource Drain", probability = 0.5f, message = "Most resources have been drained!" },
-            new HardActionDrainDisaster { name = "Catastrophic Action Drain", probability = 0.4f, message = "Action points have been severely reduced!" },
+            new HardRoundReductionDisaster { name = "Catastrophic Round Reduction", probability = 0.6f, message = "Rounds have been drastically reduced!", sound = disasterSounds[6] },
+            new HardResourceDrainDisaster { name = "Catastrophic Resource Drain", probability = 0.5f, message = "Most resources have been drained!", sound = disasterSounds[7] },
+            new HardActionDrainDisaster { name = "Catastrophic Action Drain", probability = 0.4f, message = "Action points have been severely reduced!", sound = disasterSounds[8] },
             // Add more Catastrophic disasters here
         };
     }

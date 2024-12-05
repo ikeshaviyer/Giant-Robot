@@ -45,6 +45,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b06219bb0130f2a4093357377d12e490, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disasterSounds:
+  - {fileID: 8300000, guid: db6db4dfcb9ae9e4ba99932527f2a66f, type: 3}
+  - {fileID: 8300000, guid: ffc58a2c8167e3242b7e3b010be35ff3, type: 3}
+  - {fileID: 8300000, guid: 0b8a3f34cf4c2ba4aac416086c8a9129, type: 3}
+  - {fileID: 8300000, guid: 2d54d9e0319bf19428592f5cd316cb56, type: 3}
+  - {fileID: 8300000, guid: 2300c3847d330a94685c79cc6b4399f1, type: 3}
+  - {fileID: 8300000, guid: 4409f2482412896488b7c75262ea702b, type: 3}
+  - {fileID: 8300000, guid: 011e508384f4db34fa4e8e87f195ec2a, type: 3}
+  - {fileID: 8300000, guid: c3da92c5b6f34ad45ac6f1fba802bb31, type: 3}
+  - {fileID: 8300000, guid: c8b6b343a6642784da353741cca7f75a, type: 3}
   easyDisasters:
   - name: Round Reduction
     probability: 0.6

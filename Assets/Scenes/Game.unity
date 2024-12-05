@@ -3446,6 +3446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b06219bb0130f2a4093357377d12e490, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disasterSounds: []
   easyDisasters: []
   mediumDisasters: []
   catastrophicDisasters: []

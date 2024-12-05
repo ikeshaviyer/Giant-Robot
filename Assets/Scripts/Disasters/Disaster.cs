@@ -8,7 +8,7 @@ public class Disaster
     public string name; // Name of the disaster
     public float probability; // Probability of this disaster occurring based on difficulty
     public string message; // Message to display when the disaster occurss
-    public AudioClip sound; // Add this in the base Disaster class
+    public AudioClip sound;
 
 
     // Method to apply the disaster effect
